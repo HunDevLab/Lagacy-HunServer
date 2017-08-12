@@ -8,7 +8,7 @@ cPlayer::cPlayer()
 	mLevel = 0;
 	mExp = 0;
 	mIsAlive = 0;
-	mName = nullptr;
+	mName = "";
 	mViewList.clear();
 }
 
@@ -17,64 +17,64 @@ cPlayer::~cPlayer()
 {
 }
 
-int	cPlayer::getLevel()
+int	cPlayer::GetLevel()
 {
 	return mLevel;
 }
-int cPlayer::getHp()
+int cPlayer::GetHp()
 {
 	return mHp;
 }
-int cPlayer::getExp()
+int cPlayer::GetExp()
 {
 	return mExp;
 }
-int cPlayer::getIsAlive()
+int cPlayer::GetIsAlive()
 {
 	return mIsAlive;
 }
-std::string cPlayer::getName()
+std::string cPlayer::GetName()
 {
 	return mName;
 }
-std::set<int> cPlayer::getViewList()
+std::set<int> cPlayer::GetViewList()
 {
 	return mViewList;
 }
-void cPlayer::setLevel(int level)
+void cPlayer::SetLevel(int level)
 {
 	mLevel = level;
 }
-void cPlayer::setHp(int hp)
+void cPlayer::SetHp(int hp)
 {
 	mHp = hp;
 }
-void cPlayer::setExp(int exp)
+void cPlayer::SetExp(int exp)
 {
 	mExp = exp;
 }
-void cPlayer::setIsAlive(int isAlive)
+void cPlayer::SetIsAlive(int isAlive)
 {
 	mIsAlive = isAlive;
 }
-void cPlayer::setName(std::string name)
+void cPlayer::SetName(std::string name)
 {
 	mName = name;
 }
-void cPlayer::setViewList(std::set<int> viewList)
+void cPlayer::SetViewList(std::set<int> viewList)
 {
 	mViewList = viewList;
 }
 
-int cPlayer::initialize()
+int cPlayer::Initialize()
 {
 	mHp = 0;
 	mLevel = 0;
 	mExp = 0;
 	mIsAlive = 0;
-	mName = nullptr;
+	mName = "";
 	mViewList.clear();
-	mClientInfo.initialize();
+	mClientInfo.Initialize();
 
 	return true;
 }

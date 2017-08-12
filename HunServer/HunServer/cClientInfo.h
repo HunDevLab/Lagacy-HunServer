@@ -6,10 +6,14 @@ public:
 	virtual ~cClientInfo();
 	SOCKET				GetSocket();
 	OverlappedEx		GetRecvOverEx();
+	WSABUF				GetRecvOverExWsabuf();
+	OVERLAPPED			GetRecvOverExOverlapped();
 	SRWLOCK				GetSRWLock();
 	int					GetId();
 	bool				GetIsUse();
 	
+	void				SetIsUse(bool isUsed);
+	void				SetId(int id);
 	void				Initialize();
 private:
 	SOCKET				mClientSocket;

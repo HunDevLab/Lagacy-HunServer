@@ -28,6 +28,9 @@
     <Filter Include="Util">
       <UniqueIdentifier>{1ebe1d08-dbf1-436d-a67b-dbbab5583fbf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Session">
+      <UniqueIdentifier>{f0cf363f-67a8-499d-aaa6-b90d1d133714}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -63,6 +66,9 @@
     <ClInclude Include="cSingleton.h">
       <Filter>Util</Filter>
     </ClInclude>
+    <ClInclude Include="cClientManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -85,6 +91,9 @@
     </ClCompile>
     <ClCompile Include="cLog.cpp">
       <Filter>Log</Filter>
+    </ClCompile>
+    <ClCompile Include="cClientManager.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

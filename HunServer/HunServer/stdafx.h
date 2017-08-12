@@ -18,6 +18,7 @@
 #include <map>
 #include <set>
 #include <vector>
+#include <algorithm>
 
 #include "Protocol.h"
 #include "cSingleton.h"
@@ -26,6 +27,7 @@
 #include "cLog.h"
 #include "cClientInfo.h"
 #include "cPlayer.h"
+#include "cClientManager.h"
 
 
 

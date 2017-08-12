@@ -39,7 +39,24 @@ void cClientInfo::Initialize()
 {
 	mRecvOverlappedEx.wsabuf.buf = mRecvOverlappedEx.IOCPbuf;
 	mRecvOverlappedEx.wsabuf.len = MAX_BUFF_SIZE;
+	
 	InitializeSRWLock(&mRWLock);
 	mIsUse = false;
 	mId = 0;
+}
+WSABUF cClientInfo::GetRecvOverExWsabuf()
+{
+	return mRecvOverlappedEx.wsabuf;
+}
+OVERLAPPED cClientInfo::GetRecvOverExOverlapped()
+{
+	return mRecvOverlappedEx.overlapped;
+}
+void cClientInfo::SetIsUse(bool isUsed)
+{
+	mIsUse = isUsed;
+}
+void cClientInfo::SetId(int id)
+{
+	mId = id;
 }

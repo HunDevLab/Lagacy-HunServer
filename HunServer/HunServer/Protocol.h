@@ -7,7 +7,7 @@
 
 #define VIEW_RADIUS   10
 
-#define MAX_USER 10000
+#define MAX_USER 3
 
 #define NPC_START  500
 #define NUM_OF_NPC  2000

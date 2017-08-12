@@ -16,15 +16,6 @@ cIocpServer::cIocpServer()
 	else {
 		cLog::LogMessage("cIocp 생성자 호출, WSAStartup Func Success");
 	}
-	for (int i = 0; i < MAX_USER; ++i)
-	{
-		int ret = mPlayer[i].Initialize();
-		if (ret == 0) {
-			std::cout << ret << " ";
-			cLog::ErrorDisplay("번째 플레이어 초기화 실패");
-		}
-	}
-
 }
 
 
@@ -40,6 +31,16 @@ bool cIocpServer::ConnectIoCompletionPort()
 bool cIocpServer::run()
 {
 	ConnectIoCompletionPort();
+	bool ret = cClientManager::getInstance()->InitializePlayers();
+	if (ret == false)
+	{
+		cLog::ErrorDisplay("플레이어 초기화 실패");
+	}
+	else
+	{
+		std::cout << MAX_USER << "명 ";
+		cLog::LogMessage("플레이어 초기화 성공");
+	}
 	CreateWorkerThread();
 	CreateAcceptThread();
 	return true;
@@ -176,7 +177,7 @@ void cIocpServer::AcceptThread()
 	{
 		cLog::LogMessage("Listen Func Call");
 	}
-
+	
 	int addr_size = sizeof(client_addr);
 	while (true) {
 		SOCKET client_socket = WSAAccept(listen_socket,
@@ -190,14 +191,23 @@ void cIocpServer::AcceptThread()
 		else {
 			cLog::LogMessage("Accept Func Call Success");
 		}
+
+		int playerId = cClientManager::getInstance()->AllocatePlayerId();
+		if (playerId == -1) {
+			cLog::ErrorDisplay("허용유저 초과");
+		}
 		// IOCP 연결
 		CreateIoCompletionPort(reinterpret_cast<HANDLE>(client_socket),
 			mIocp, 0, 0);
 		// Recv호출
-		//unsigned long recv_flag = 0;
+		unsigned long recv_flag = 0;
+
+		cPlayer* player = cClientManager::getInstance()->FindPlayerById(playerId);
+		std::cout << "플레이어 사용가능 여부 : " << player->GetIsUse() << std::endl;
+		std::cout << "플레이어 ID" << player->GetId() << std::endl;
 		//int ret = WSARecv(client_socket,
-		//	&players[id].recv_over_ex.wsabuf, 1, NULL, &recv_flag,
-		//	&players[id].recv_over_ex.overlapped, NULL);
+		//	&player->GetRecvOverExWsabuf(), 1, NULL, &recv_flag,
+		//	&player->GetRecvOverExOverlapped(), NULL);
 		//if (ret) {
 		//	// WSAENOTSOCK
 		//	int err_code = WSAGetLastError();

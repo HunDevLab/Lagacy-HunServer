@@ -1,6 +1,7 @@
 #pragma once
-#include "cPlayer.h"
+//#include "cPlayer.h"
 
+class cClientManager;
 class cIocpServer : public Singleton<cIocpServer>
 {
 public:
@@ -16,11 +17,14 @@ public:
 
 	void		WorkerThread();
 	void		AcceptThread();
+
+	//void		InitializePlayer();
 private:
 	WSADATA		mWsaData;
 	SOCKET		mListenSock;
 	HANDLE		mIocp;
-	cPlayer		mPlayer[MAX_USER];
+	//std::vector<cPlayer*> mPlayers;
+	//cClientManager* mClientManager;
 
 	std::vector<std::thread*> mWorkerThread;
 	std::thread* mAcceptThread;

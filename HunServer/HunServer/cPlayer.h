@@ -23,8 +23,8 @@ public:
 
 private:
 	std::string	mName;
-	int			mLevel;
 	int			mHp;
+	int			mLevel;
 	int			mExp;
 	int			mIsAlive;
 	std::set<int>	mViewList;
