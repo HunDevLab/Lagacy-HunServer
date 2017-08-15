@@ -28,6 +28,7 @@
 #include "cClientInfo.h"
 #include "cPlayer.h"
 #include "cClientManager.h"
+#include "cPacketController.h"
 
 
 

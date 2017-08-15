@@ -21,6 +21,8 @@ cIocpServer::cIocpServer()
 
 cIocpServer::~cIocpServer()
 {
+	closesocket(mListenSock);
+	WSACleanup();
 }
 
 bool cIocpServer::ConnectIoCompletionPort()
@@ -47,7 +49,10 @@ bool cIocpServer::run()
 }
 void cIocpServer::CreateWorkerThread()
 {
-	for (int i = 0; i < NUM_THREADS; ++i)
+	SYSTEM_INFO systemInfo;
+	GetSystemInfo(&systemInfo);
+	int threadCount = systemInfo.dwNumberOfProcessors * 2;
+	for (int i = 0; i < threadCount; ++i)
 	{
 		mWorkerThread.push_back(new std::thread{std::mem_fun(&cIocpServer::WorkerThread), this});
 		std::cout << i + 1 << " ";
@@ -75,21 +80,21 @@ void cIocpServer::WorkerThread()
 
 	while (true) {
 		GetQueuedCompletionStatus(mIocp, &io_size, (PULONG)&id, reinterpret_cast<LPOVERLAPPED *>(&overlapped), INFINITE);
-
+		auto player = cClientManager::getInstance()->FindPlayerById(id);
 		if (io_size == 0) {
-			//players[id].in_use = false;
-			//std::cout << "ID : " << id << "Players[id].in_use = " << players[id].in_use << std::endl;
-			//std::cout << "before UpdateDB : " << players[id].name << std::endl;
-			//UpdateDB(players[id].name, id, players[id].x, players[id].y, players[id].Level, players[id].Exp);
-			//for (int i = 0; i<MAX_USER; ++i) {
-			//	if (players[i].in_use == false) continue;
-			//	//send_remove_player(i, id);
-			//	if (0 != players[i].view_list.count(id)) {
-			//		players[i].view_list.erase(id);
-			//		send_remove_player(i, id);
-			//	}
-			//}
-			//closesocket(players[id].my_socket);
+			player->SetIsUse(false);
+			std::cout << "ID : " << id << "Players[id].in_use = " << player->GetIsUse() << std::endl;
+			/*std::cout << "before UpdateDB : " << players[id].name << std::endl;
+			UpdateDB(players[id].name, id, players[id].x, players[id].y, players[id].Level, players[id].Exp);*/
+			for (int i = 0; i < MAX_USER; ++i) {
+				if (player->GetIsUse() == false) continue;
+				//send_remove_player(i, id);
+				//if (0 != players[i].view_list.count(id)) {
+					//players[i].view_list.erase(id);
+					//send_remove_player(i, id);
+				//}
+			}
+			closesocket(player->GetSocket());
 		}
 
 		if (overlapped->is_send == false) {
@@ -99,39 +104,39 @@ void cIocpServer::WorkerThread()
 			int old_received = overlapped->prev_received;
 
 			while (0 != rest) {
-				//if (0 == packet_size) packet_size = buf[0];
-				//int required = packet_size - old_received;
-				//if (rest >= required) {  // 패킷 제작 가능
-				//	memcpy(overlapped->PacketBuf + old_received,
-				//		buf, required);
-				//	ProcessPacket(id, overlapped->PacketBuf);
-				//	packet_size = 0;
-				//	old_received = 0;
-				//	buf += required;
-				//	rest -= required;
-				//}
-				//else { // 패킷을 완성하기에는 데이타가 부족
-				//	memcpy(overlapped->PacketBuf + old_received,
-				//		buf, rest);
-				//	old_received += rest;
-				//	rest = 0;
-				//}
+				if (0 == packet_size) packet_size = buf[0];
+				int required = packet_size - old_received;
+				if (rest >= required) {  // 패킷 제작 가능
+					memcpy(overlapped->PacketBuf + old_received,
+						buf, required);
+					cPacketController::getInstance()->ProcessPacket(id, overlapped->PacketBuf);
+					packet_size = 0;
+					old_received = 0;
+					buf += required;
+					rest -= required;
+				}
+				else { // 패킷을 완성하기에는 데이타가 부족
+					memcpy(overlapped->PacketBuf + old_received,
+						buf, rest);
+					old_received += rest;
+					rest = 0;
+				}
 			} // 패킷 조립 while 루프
-			//overlapped->curr_packet_size = packet_size;
-			//overlapped->prev_received = old_received;
-			//DWORD recv_flag = 0;
-			//int ret = WSARecv(players[id].my_socket,
-			//	&players[id].recv_over_ex.wsabuf, 1,
-			//	NULL, &recv_flag,
-			//	&players[id].recv_over_ex.overlapped, NULL);
+			overlapped->curr_packet_size = packet_size;
+			overlapped->prev_received = old_received;
+			DWORD recv_flag = 0;
+			int ret = WSARecv(player->GetSocket(),
+				&player->GetRecvOverExWsabuf(), 1,
+				NULL, &recv_flag,
+				&player->GetRecvOverExOverlapped(), NULL);
 
-			//if (ret) {	// WSAENOTSOCK
-			//	int err_code = WSAGetLastError();
-			//	if (err_code != ERROR_IO_PENDING) {
+			if (ret) {	// WSAENOTSOCK
+				int err_code = WSAGetLastError();
+				if (err_code != ERROR_IO_PENDING) {
 
-			//		cLog::ErrorDisplay("Recv on workerthread\n", err_code);
-			//	}
-			//}
+					cLog::ErrorDisplay("Recv on workerthread\n", err_code);
+				}
+			}
 		}
 		else if (overlapped->is_send == true) {
 			delete overlapped;
@@ -147,7 +152,7 @@ void cIocpServer::AcceptThread()
 	struct sockaddr_in listen_addr;
 	struct sockaddr_in client_addr;
 
-	SOCKET listen_socket = WSASocket(AF_INET, SOCK_STREAM,
+	mListenSock = WSASocket(AF_INET, SOCK_STREAM,
 		IPPROTO_TCP, NULL, 0,
 		WSA_FLAG_OVERLAPPED);
 
@@ -157,7 +162,7 @@ void cIocpServer::AcceptThread()
 	listen_addr.sin_port = htons(MY_SERVER_PORT);
 	ZeroMemory(&listen_addr.sin_zero, 8);
 
-	int ret = ::bind(listen_socket,
+	int ret = ::bind(mListenSock,
 		reinterpret_cast<sockaddr *>(&listen_addr),
 		sizeof(listen_addr));
 	if (SOCKET_ERROR == ret) {
@@ -168,7 +173,7 @@ void cIocpServer::AcceptThread()
 	{
 		cLog::LogMessage("Bind Func Call");
 	}
-	ret = listen(listen_socket, 10);
+	ret = listen(mListenSock, 10);
 	if (SOCKET_ERROR == ret) {
 		cLog::ErrorDisplay("LISTEN", WSAGetLastError());
 		exit(-1);
@@ -180,7 +185,7 @@ void cIocpServer::AcceptThread()
 	
 	int addr_size = sizeof(client_addr);
 	while (true) {
-		SOCKET client_socket = WSAAccept(listen_socket,
+		SOCKET client_socket = WSAAccept(mListenSock,
 			reinterpret_cast<sockaddr *>(&client_addr),
 			&addr_size, NULL, NULL);
 
@@ -205,14 +210,16 @@ void cIocpServer::AcceptThread()
 		cPlayer* player = cClientManager::getInstance()->FindPlayerById(playerId);
 		std::cout << "플레이어 사용가능 여부 : " << player->GetIsUse() << std::endl;
 		std::cout << "플레이어 ID" << player->GetId() << std::endl;
-		//int ret = WSARecv(client_socket,
-		//	&player->GetRecvOverExWsabuf(), 1, NULL, &recv_flag,
-		//	&player->GetRecvOverExOverlapped(), NULL);
-		//if (ret) {
-		//	// WSAENOTSOCK
-		//	int err_code = WSAGetLastError();
-		//	if (err_code != ERROR_IO_PENDING)
-		//		printf("Recv Error [%d]\n", err_code);
-		//}
+		int ret = WSARecv(client_socket,
+			&player->GetRecvOverExWsabuf(), 1, NULL, &recv_flag,
+			&player->GetRecvOverExOverlapped(), NULL);
+		if (ret) {
+			// WSAENOTSOCK
+			int err_code = WSAGetLastError();
+			if (err_code != ERROR_IO_PENDING)
+				printf("Recv Error [%d]\n", err_code);
+		}
+
+		
 	}
 }
