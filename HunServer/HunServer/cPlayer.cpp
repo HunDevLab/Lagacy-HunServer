@@ -68,13 +68,6 @@ void cPlayer::SetViewList(std::set<int> viewList)
 
 int cPlayer::Initialize()
 {
-	mHp = 0;
-	mLevel = 0;
-	mExp = 0;
-	mIsAlive = 0;
-	mName = "";
-	mViewList.clear();
-	mClientInfo.Initialize();
 
 	return true;
 }

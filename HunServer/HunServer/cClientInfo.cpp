@@ -60,3 +60,7 @@ void cClientInfo::SetId(int id)
 {
 	mId = id;
 }
+void cClientInfo::SetSocket(SOCKET* socket)
+{
+	mClientSocket = *socket;
+}

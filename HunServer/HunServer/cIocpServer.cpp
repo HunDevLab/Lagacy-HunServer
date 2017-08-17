@@ -21,7 +21,7 @@ cIocpServer::cIocpServer()
 
 cIocpServer::~cIocpServer()
 {
-	closesocket(mListenSock);
+	//closesocket(mListenSock);
 	WSACleanup();
 }
 
@@ -64,10 +64,6 @@ void cIocpServer::CreateAcceptThread()
 	mAcceptThread = new std::thread{ std::mem_fun(&cIocpServer::AcceptThread), this };
 	cLog::LogMessage("AcceptThread 생성");
 }
-SOCKET cIocpServer::getListenSocket()
-{
-	return mListenSock;
-}
 HANDLE cIocpServer::getIocpHandle()
 {
 	return mIocp;
@@ -94,7 +90,7 @@ void cIocpServer::WorkerThread()
 					//send_remove_player(i, id);
 				//}
 			}
-			closesocket(player->GetSocket());
+			//closesocket(player->GetSocket());
 		}
 
 		if (overlapped->is_send == false) {
@@ -152,7 +148,7 @@ void cIocpServer::AcceptThread()
 	struct sockaddr_in listen_addr;
 	struct sockaddr_in client_addr;
 
-	mListenSock = WSASocket(AF_INET, SOCK_STREAM,
+	SOCKET listenSocket = WSASocket(AF_INET, SOCK_STREAM,
 		IPPROTO_TCP, NULL, 0,
 		WSA_FLAG_OVERLAPPED);
 
@@ -162,7 +158,7 @@ void cIocpServer::AcceptThread()
 	listen_addr.sin_port = htons(MY_SERVER_PORT);
 	ZeroMemory(&listen_addr.sin_zero, 8);
 
-	int ret = ::bind(mListenSock,
+	int ret = ::bind(listenSocket,
 		reinterpret_cast<sockaddr *>(&listen_addr),
 		sizeof(listen_addr));
 	if (SOCKET_ERROR == ret) {
@@ -173,7 +169,7 @@ void cIocpServer::AcceptThread()
 	{
 		cLog::LogMessage("Bind Func Call");
 	}
-	ret = listen(mListenSock, 10);
+	ret = listen(listenSocket, 10);
 	if (SOCKET_ERROR == ret) {
 		cLog::ErrorDisplay("LISTEN", WSAGetLastError());
 		exit(-1);
@@ -185,7 +181,7 @@ void cIocpServer::AcceptThread()
 	
 	int addr_size = sizeof(client_addr);
 	while (true) {
-		SOCKET client_socket = WSAAccept(mListenSock,
+		SOCKET client_socket = WSAAccept(listenSocket,
 			reinterpret_cast<sockaddr *>(&client_addr),
 			&addr_size, NULL, NULL);
 
@@ -201,18 +197,22 @@ void cIocpServer::AcceptThread()
 		if (playerId == -1) {
 			cLog::ErrorDisplay("허용유저 초과");
 		}
+		cPlayer* player = cClientManager::getInstance()->FindPlayerById(playerId);
+		player->mClientSocket = client_socket;
+		player->mRecvOverlappedEx.curr_packet_size = 0;
+		player->mRecvOverlappedEx.is_send = false;
+		player->mRecvOverlappedEx.prev_received = 0;
+		ZeroMemory(&player->mRecvOverlappedEx.overlapped, sizeof(WSAOVERLAPPED));
+		std::cout << "플레이어 사용가능 여부 : " << player->GetIsUse() << std::endl;
+		std::cout << "플레이어 ID" << player->GetId() << std::endl;
 		// IOCP 연결
 		CreateIoCompletionPort(reinterpret_cast<HANDLE>(client_socket),
 			mIocp, 0, 0);
 		// Recv호출
 		unsigned long recv_flag = 0;
-
-		cPlayer* player = cClientManager::getInstance()->FindPlayerById(playerId);
-		std::cout << "플레이어 사용가능 여부 : " << player->GetIsUse() << std::endl;
-		std::cout << "플레이어 ID" << player->GetId() << std::endl;
-		int ret = WSARecv(client_socket,
-			&player->GetRecvOverExWsabuf(), 1, NULL, &recv_flag,
-			&player->GetRecvOverExOverlapped(), NULL);
+		int ret = WSARecv(player->mClientSocket,
+			&player->mRecvOverlappedEx.wsabuf, 1, NULL, &recv_flag,
+			&player->mRecvOverlappedEx.overlapped, NULL);
 		if (ret) {
 			// WSAENOTSOCK
 			int err_code = WSAGetLastError();
@@ -222,4 +222,5 @@ void cIocpServer::AcceptThread()
 
 		
 	}
+	closesocket(listenSocket);
 }

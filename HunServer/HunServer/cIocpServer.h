@@ -12,7 +12,6 @@ public:
 	bool		run();
 	void		CreateWorkerThread();
 	void		CreateAcceptThread();
-	SOCKET		getListenSocket();
 	HANDLE		getIocpHandle();
 
 	void		WorkerThread();
@@ -21,7 +20,7 @@ public:
 	//void		InitializePlayer();
 private:
 	WSADATA		mWsaData;
-	SOCKET		mListenSock;
+	//SOCKET		mListenSock;
 	HANDLE		mIocp;
 	//std::vector<cPlayer*> mPlayers;
 	//cClientManager* mClientManager;

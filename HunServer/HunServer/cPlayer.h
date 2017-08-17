@@ -20,7 +20,11 @@ public:
 	void SetViewList(std::set<int> viewList);
 
 	int Initialize();
-
+	SOCKET				mClientSocket;
+	OverlappedEx		mRecvOverlappedEx;
+	SRWLOCK				mRWLock;
+	int					mId;
+	bool				mIsUse;
 private:
 	std::string	mName;
 	int			mHp;
@@ -28,6 +32,6 @@ private:
 	int			mExp;
 	int			mIsAlive;
 	std::set<int>	mViewList;
-	cClientInfo mClientInfo;
+	//cClientInfo mClientInfo;
 };
 

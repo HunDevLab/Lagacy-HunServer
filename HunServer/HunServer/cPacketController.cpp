@@ -26,8 +26,15 @@ void cPacketController::ProcessPacket(int id, unsigned char* packet)
 {
 	switch (packet[1])
 	{
-	case 0:
+	case CS_LOGIN:
+	{
+		sc_packet_login loginpacket;
+		loginpacket.size = sizeof(sc_packet_login);
+		loginpacket.type = SC_LOGIN_OK;
+		loginpacket.id = id;
+
 		break;
+	}
 	default:
 		break;
 	}

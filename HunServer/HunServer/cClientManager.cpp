@@ -59,3 +59,7 @@ cPlayer* cClientManager::FindPlayerById(int playerId)
 	
 	return *player;
 }
+void cClientManager::PushPlayer(cPlayer* player)
+{
+	mPlayers.push_back(player);
+}
