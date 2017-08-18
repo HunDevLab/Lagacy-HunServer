@@ -1,9 +1,7 @@
 #include "stdafx.h"
 #include "cIocpServer.h"
 
-//class cClientInfo;
-//
-//cClientInfo gUser[MAX_USER];
+
 
 cIocpServer::cIocpServer()
 {
@@ -82,15 +80,16 @@ void cIocpServer::WorkerThread()
 			std::cout << "ID : " << id << "Players[id].in_use = " << player->GetIsUse() << std::endl;
 			/*std::cout << "before UpdateDB : " << players[id].name << std::endl;
 			UpdateDB(players[id].name, id, players[id].x, players[id].y, players[id].Level, players[id].Exp);*/
-			for (int i = 0; i < MAX_USER; ++i) {
-				if (player->GetIsUse() == false) continue;
+			//for (int i = 0; i < MAX_USER; ++i) {
+			//	if (player->GetIsUse() == false) continue;
 				//send_remove_player(i, id);
 				//if (0 != players[i].view_list.count(id)) {
 					//players[i].view_list.erase(id);
 					//send_remove_player(i, id);
 				//}
-			}
-			//closesocket(player->GetSocket());
+			//}
+			closesocket(player->mClientSocket);
+			continue;
 		}
 
 		if (overlapped->is_send == false) {
@@ -105,7 +104,7 @@ void cIocpServer::WorkerThread()
 				if (rest >= required) {  // 패킷 제작 가능
 					memcpy(overlapped->PacketBuf + old_received,
 						buf, required);
-					cPacketController::getInstance()->ProcessPacket(id, overlapped->PacketBuf);
+					cPacketController::getInstance()->ProcessPacket(player->GetId(), overlapped->PacketBuf);
 					packet_size = 0;
 					old_received = 0;
 					buf += required;
@@ -121,10 +120,10 @@ void cIocpServer::WorkerThread()
 			overlapped->curr_packet_size = packet_size;
 			overlapped->prev_received = old_received;
 			DWORD recv_flag = 0;
-			int ret = WSARecv(player->GetSocket(),
-				&player->GetRecvOverExWsabuf(), 1,
+			int ret = WSARecv(player->mClientSocket,
+				&player->mRecvOverlappedEx.wsabuf, 1,
 				NULL, &recv_flag,
-				&player->GetRecvOverExOverlapped(), NULL);
+				&player->mRecvOverlappedEx.overlapped, NULL);
 
 			if (ret) {	// WSAENOTSOCK
 				int err_code = WSAGetLastError();
@@ -207,7 +206,7 @@ void cIocpServer::AcceptThread()
 		std::cout << "플레이어 ID" << player->GetId() << std::endl;
 		// IOCP 연결
 		CreateIoCompletionPort(reinterpret_cast<HANDLE>(client_socket),
-			mIocp, 0, 0);
+			mIocp, playerId, 0);
 		// Recv호출
 		unsigned long recv_flag = 0;
 		int ret = WSARecv(player->mClientSocket,

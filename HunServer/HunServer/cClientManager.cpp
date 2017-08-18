@@ -18,14 +18,6 @@ bool cClientManager::InitializePlayers()
 	for (int i = 0; i < MAX_USER; ++i)
 	{
 		auto player = new cPlayer;
-		int ret = player->Initialize();
-		if (ret == 0) {
-			cLog::ErrorDisplay("플레이어 초기화 실패");
-			return false;
-		}
-		else {
-			cLog::LogMessage("플레이어 초기화 성공");
-		}
 		mPlayers.push_back(player);
 	}
 	return true;
@@ -56,10 +48,7 @@ cPlayer* cClientManager::FindPlayerById(int playerId)
 		}
 		return false;
 	});
-	
+	(*player)->mRecvOverlappedEx.wsabuf.buf = (*player)->mRecvOverlappedEx.IOCPbuf;
+	(*player)->mRecvOverlappedEx.wsabuf.len = MAX_BUFF_SIZE;
 	return *player;
-}
-void cClientManager::PushPlayer(cPlayer* player)
-{
-	mPlayers.push_back(player);
 }

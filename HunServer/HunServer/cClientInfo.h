@@ -14,7 +14,7 @@ public:
 	
 	void				SetIsUse(bool isUsed);
 	void				SetId(int id);
-	void				SetSocket(SOCKET* socket);
+	void				SetSocket(SOCKET socket);
 	void				Initialize();
 private:
 	SOCKET				mClientSocket;

@@ -28,6 +28,8 @@ void cPacketController::ProcessPacket(int id, unsigned char* packet)
 	{
 	case CS_LOGIN:
 	{
+		std::cout << "CS_LOGIN Packet 처리 부분 진입" << std::endl;
+		std::cout << "ID : " << id << std::endl;
 		sc_packet_login loginpacket;
 		loginpacket.size = sizeof(sc_packet_login);
 		loginpacket.type = SC_LOGIN_OK;
