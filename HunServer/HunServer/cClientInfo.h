@@ -6,8 +6,8 @@ public:
 	virtual ~cClientInfo();
 	SOCKET				GetSocket();
 	OverlappedEx		GetRecvOverEx();
-	WSABUF				GetRecvOverExWsabuf();
-	OVERLAPPED			GetRecvOverExOverlapped();
+	WSABUF*				GetRecvOverExWsabuf();
+	OVERLAPPED*			GetRecvOverExOverlapped();
 	SRWLOCK				GetSRWLock();
 	int					GetId();
 	bool				GetIsUse();
@@ -15,7 +15,10 @@ public:
 	void				SetIsUse(bool isUsed);
 	void				SetId(int id);
 	void				SetSocket(SOCKET socket);
-	void				Initialize();
+	void				SetCurrPacketSize(int size);
+	void				SetPrevPacketSize(int size);
+	void				resetClient();
+
 private:
 	SOCKET				mClientSocket;
 	OverlappedEx		mRecvOverlappedEx;

@@ -7,5 +7,6 @@ public:
 public:
 	void SendPacket(int client, char* packet);
 	void ProcessPacket(int id, unsigned char* packet);
+	std::mutex mLock;
 };
 

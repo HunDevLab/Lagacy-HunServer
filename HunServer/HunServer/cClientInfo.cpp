@@ -4,8 +4,12 @@
 
 cClientInfo::cClientInfo()
 {
-	mRecvOverlappedEx.wsabuf.buf = mRecvOverlappedEx.IOCPbuf;
-	mRecvOverlappedEx.wsabuf.len = MAX_BUFF_SIZE;
+	mRecvOverlappedEx.mCurrPacketSize = 0;
+	mRecvOverlappedEx.mIoType = IOType::IO_RECV;
+	mRecvOverlappedEx.mPrevReceived = 0;
+	ZeroMemory(&mRecvOverlappedEx.mOverlapped, sizeof(WSAOVERLAPPED));
+	mRecvOverlappedEx.mWsaBuf.buf = mRecvOverlappedEx.IOCPbuf;
+	mRecvOverlappedEx.mWsaBuf.len = MAX_BUFF_SIZE;
 	InitializeSRWLock(&mRWLock);
 	mIsUse = false;
 	mId = 0;
@@ -35,22 +39,14 @@ bool cClientInfo::GetIsUse()
 {
 	return mIsUse;
 }
-void cClientInfo::Initialize()
+
+WSABUF* cClientInfo::GetRecvOverExWsabuf()
 {
-	mRecvOverlappedEx.wsabuf.buf = mRecvOverlappedEx.IOCPbuf;
-	mRecvOverlappedEx.wsabuf.len = MAX_BUFF_SIZE;
-	
-	InitializeSRWLock(&mRWLock);
-	mIsUse = false;
-	mId = 0;
+	return &mRecvOverlappedEx.mWsaBuf;
 }
-WSABUF cClientInfo::GetRecvOverExWsabuf()
+OVERLAPPED* cClientInfo::GetRecvOverExOverlapped()
 {
-	return mRecvOverlappedEx.wsabuf;
-}
-OVERLAPPED cClientInfo::GetRecvOverExOverlapped()
-{
-	return mRecvOverlappedEx.overlapped;
+	return &mRecvOverlappedEx.mOverlapped;
 }
 void cClientInfo::SetIsUse(bool isUsed)
 {
@@ -63,4 +59,26 @@ void cClientInfo::SetId(int id)
 void cClientInfo::SetSocket(SOCKET socket)
 {
 	mClientSocket = socket;
+}
+void cClientInfo::SetCurrPacketSize(int size)
+{
+	mRecvOverlappedEx.mCurrPacketSize = size;
+}
+void cClientInfo::SetPrevPacketSize(int size)
+{
+	mRecvOverlappedEx.mPrevReceived = size;
+}
+void cClientInfo::resetClient()
+{
+
+	mRecvOverlappedEx.mCurrPacketSize = 0;
+	mRecvOverlappedEx.mIoType = IOType::IO_RECV;
+	mRecvOverlappedEx.mPrevReceived = 0;
+	ZeroMemory(&mRecvOverlappedEx.mOverlapped, sizeof(WSAOVERLAPPED));
+	mRecvOverlappedEx.mWsaBuf.buf = mRecvOverlappedEx.IOCPbuf;
+	mRecvOverlappedEx.mWsaBuf.len = MAX_BUFF_SIZE;
+	InitializeSRWLock(&mRWLock);
+	mIsUse = false;
+	mId = 0;
+	mClientSocket = NULL;
 }

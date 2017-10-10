@@ -4,7 +4,7 @@
 
 cClientManager::cClientManager()
 {
-	mId = 0;
+	mId = -1;
 }
 
 
@@ -12,20 +12,19 @@ cClientManager::~cClientManager()
 {
 }
 
-bool cClientManager::InitializePlayers()
+void cClientManager::AddPlayer(int playerId, SOCKET sock)
 {
-	mPlayers.reserve(MAX_USER);
-	for (int i = 0; i < MAX_USER; ++i)
-	{
-		auto player = new cPlayer;
-		mPlayers.push_back(player);
+	auto player = mPlayers[playerId];
+	if (player != nullptr) {
+		player->SetId(playerId);
+		player->SetIsUse(true);
+		player->SetSocket(sock);
+		
 	}
-	return true;
 }
-
-int cClientManager::AllocatePlayerId()
+int cClientManager::SetConnectId()
 {
-	for (auto player : mPlayers)
+	/*for (auto player : mPlayers)
 	{
 		if (player->GetIsUse() == false)
 		{
@@ -34,8 +33,22 @@ int cClientManager::AllocatePlayerId()
 			player->SetId(mId);
 			return player->GetId();
 		}
+	}*/
+	for (int i = 0; i < MAX_USER; ++i)
+	{
+		/*if (FindPlayerById(i) == nullptr)
+		{
+			return i;
+		}*/
+		auto player = mPlayers[i];
+		if (player->GetIsUse() == false)
+		{
+			return i;
+		}
+		else {
+			continue;
+		}
 	}
-	cLog::ErrorDisplay("유저의 접속 수가 초과 되었습니다. 유저수를 늘리세요 멍청아");
 	return -1;
 }
 
@@ -48,7 +61,44 @@ cPlayer* cClientManager::FindPlayerById(int playerId)
 		}
 		return false;
 	});
-	(*player)->mRecvOverlappedEx.wsabuf.buf = (*player)->mRecvOverlappedEx.IOCPbuf;
-	(*player)->mRecvOverlappedEx.wsabuf.len = MAX_BUFF_SIZE;
+	if (player == mPlayers.end()) {
+		return nullptr;
+	}
+	
 	return *player;
+}
+void cClientManager::RemovePlayer(int playerId)
+{
+	
+	auto player = std::find_if(mPlayers.begin(), mPlayers.end(), [=](cPlayer* a) {
+		if (a->GetId() == playerId)
+		{
+			return true;
+		}
+		return false;
+	});
+	if (player != mPlayers.end())
+	{
+		if ((*player)->GetIsUse() == true)
+		{
+			std::cout << "playerId : " << playerId;
+			(*player)->resetClient();
+			(*player)->resetPlayer();
+			(*player)->SetId(playerId);
+			std::cout << " RemovePlayer Function .. [Success]" << std::endl;
+		}
+	}
+	
+}
+BOOL cClientManager::InitailizeClient()
+{
+	for (int i = 0; i < MAX_USER; ++i) {
+		cPlayer* player = new cPlayer;
+		player->resetPlayer();
+		player->resetClient();
+		player->SetId(i);
+		mPlayers.push_back(player);
+	}
+	std::cout << "Player's Initialize ... [Success]" << std::endl;
+	return true;
 }

@@ -7,8 +7,8 @@
 
 #include "targetver.h"
 #pragma comment(lib, "ws2_32.lib")
+#define NOMINMAX
 #include <winsock2.h>
-
 #include <Windows.h>
 #include <iostream>
 #include <thread>
@@ -23,13 +23,14 @@
 #include "Protocol.h"
 #include "cSingleton.h"
 #include "CommonDef.h"
-#include "cIocpServer.h"
+#include "cIocpManager.h"
 #include "cLog.h"
 #include "cClientInfo.h"
 #include "cPlayer.h"
 #include "cClientManager.h"
 #include "cPacketController.h"
+#include "cNetworkSession.h"
 
-
+static std::mutex gLock;
 
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.

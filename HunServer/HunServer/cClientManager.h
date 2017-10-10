@@ -5,16 +5,17 @@ public:
 	cClientManager();
 	~cClientManager();
 
-	// 초기화
-	bool InitializePlayers();
 	// ID 할당
-	int AllocatePlayerId();
-
+	int SetConnectId();
+	BOOL InitailizeClient();
+	void AddPlayer(int playerId, SOCKET sock);
+	void RemovePlayer(int playerId);
 	// ID 로 플레이어 찾기
 	cPlayer* FindPlayerById(int playerId);
 
 private:
 	std::vector<cPlayer*> mPlayers;
 	int mId;
+	std::mutex		mClientLock;
 };
 

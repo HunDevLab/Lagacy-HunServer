@@ -6,25 +6,6 @@ public:
 	cPlayer();
 	virtual ~cPlayer();
 
-	int	GetLevel();
-	int GetHp();
-	int GetExp();
-	int GetIsAlive();
-	std::string GetName();
-	std::set<int> GetViewList();
-	void SetLevel(int level);
-	void SetHp(int hp);
-	void SetExp(int exp);
-	void SetIsAlive(int isAlive);
-	void SetName(std::string name);
-	void SetViewList(std::set<int> viewList);
-
-	int Initialize();
-	SOCKET				mClientSocket;
-	OverlappedEx		mRecvOverlappedEx;
-	SRWLOCK				mRWLock;
-	int					mId;
-	bool				mIsUse;
 private:
 	std::string	mName;
 	int			mHp;
@@ -32,6 +13,22 @@ private:
 	int			mExp;
 	int			mIsAlive;
 	std::set<int>	mViewList;
-	//cClientInfo mClientInfo;
+
+public:
+	int	GetLevel() { return mLevel; }
+	int GetHp() { return mHp; }
+	int GetExp() { return mExp; }
+	int GetIsAlive() { return mIsAlive; }
+	std::string GetName() { return mName; }
+	std::set<int> GetViewList() { return mViewList; }
+
+	void SetLevel(int level) { mLevel = level; }
+	void SetHp(int hp) { mHp = hp; }
+	void SetExp(int exp) { mExp = exp; }
+	void SetIsAlive(int isAlive) { mIsAlive = isAlive; }
+	void SetName(std::string name) { mName = name; }
+	void SetViewList(std::set<int> viewList) { mViewList = viewList; }
+
+	void resetPlayer();
 };
 

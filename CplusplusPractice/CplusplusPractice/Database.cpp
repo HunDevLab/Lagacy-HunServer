@@ -47,6 +47,7 @@ namespace Records {
 				return *emp;
 			}
 		}
+		return *mEmployees.begin();
 	}
 	void Database::displayAll() const
 	{

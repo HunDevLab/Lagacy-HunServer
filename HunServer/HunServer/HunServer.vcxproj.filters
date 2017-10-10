@@ -28,8 +28,11 @@
     <Filter Include="Util">
       <UniqueIdentifier>{1ebe1d08-dbf1-436d-a67b-dbbab5583fbf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Session">
-      <UniqueIdentifier>{f0cf363f-67a8-499d-aaa6-b90d1d133714}</UniqueIdentifier>
+    <Filter Include="Server">
+      <UniqueIdentifier>{08561301-6d87-4514-b484-789b488d6ed6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Event">
+      <UniqueIdentifier>{89447cca-67b6-4b9a-854a-7417ce946e63}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -57,24 +60,27 @@
     <ClInclude Include="cPacketController.h">
       <Filter>Packet</Filter>
     </ClInclude>
-    <ClInclude Include="cIocpServer.h">
-      <Filter>Network</Filter>
-    </ClInclude>
     <ClInclude Include="cLog.h">
       <Filter>Log</Filter>
     </ClInclude>
     <ClInclude Include="cSingleton.h">
       <Filter>Util</Filter>
     </ClInclude>
+    <ClInclude Include="cNetworkSession.h">
+      <Filter>Network</Filter>
+    </ClInclude>
     <ClInclude Include="cClientManager.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="cIocpManager.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="cEventManager.h">
+      <Filter>Event</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="HunServer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="cClientInfo.cpp">
@@ -86,14 +92,23 @@
     <ClCompile Include="cPacketController.cpp">
       <Filter>Packet</Filter>
     </ClCompile>
-    <ClCompile Include="cIocpServer.cpp">
-      <Filter>Network</Filter>
-    </ClCompile>
     <ClCompile Include="cLog.cpp">
       <Filter>Log</Filter>
     </ClCompile>
-    <ClCompile Include="cClientManager.cpp">
+    <ClCompile Include="ServerMain.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="cNetworkSession.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="cClientManager.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="cIocpManager.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="cEventManager.cpp">
+      <Filter>Event</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

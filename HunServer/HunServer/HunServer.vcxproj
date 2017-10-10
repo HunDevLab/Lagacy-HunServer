@@ -140,8 +140,10 @@
   <ItemGroup>
     <ClInclude Include="cClientInfo.h" />
     <ClInclude Include="cClientManager.h" />
-    <ClInclude Include="cIocpServer.h" />
+    <ClInclude Include="cEventManager.h" />
+    <ClInclude Include="cIocpManager.h" />
     <ClInclude Include="cLog.h" />
+    <ClInclude Include="cNetworkSession.h" />
     <ClInclude Include="CommonDef.h" />
     <ClInclude Include="cPacketController.h" />
     <ClInclude Include="cPlayer.h" />
@@ -153,11 +155,13 @@
   <ItemGroup>
     <ClCompile Include="cClientInfo.cpp" />
     <ClCompile Include="cClientManager.cpp" />
-    <ClCompile Include="cIocpServer.cpp" />
+    <ClCompile Include="cEventManager.cpp" />
+    <ClCompile Include="cIocpManager.cpp" />
     <ClCompile Include="cLog.cpp" />
+    <ClCompile Include="cNetworkSession.cpp" />
     <ClCompile Include="cPacketController.cpp" />
     <ClCompile Include="cPlayer.cpp" />
-    <ClCompile Include="HunServer.cpp" />
+    <ClCompile Include="ServerMain.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

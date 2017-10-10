@@ -1,10 +1,18 @@
 #pragma once
+enum IOType {
+	IO_SEND,
+	IO_RECV,
+	IO_RECV_ZERO,
+	IO_ACCEPT,
+	IO_POST,
+	IO_NONE,
+};
 struct OverlappedEx {
-	WSAOVERLAPPED overlapped;
-	WSABUF	wsabuf;
-	bool	is_send;
+	WSAOVERLAPPED mOverlapped;
+	WSABUF	mWsaBuf;
+	IOType	mIoType;
 	char IOCPbuf[MAX_BUFF_SIZE];
-	unsigned char PacketBuf[MAX_PACKET_SIZE];
-	int     curr_packet_size;
-	int     prev_received;
+	unsigned char mPacketBuf[MAX_PACKET_SIZE];
+	int     mCurrPacketSize;
+	int     mPrevReceived;
 };
