@@ -15,4 +15,5 @@ struct OverlappedEx {
 	unsigned char mPacketBuf[MAX_PACKET_SIZE];
 	int     mCurrPacketSize;
 	int     mPrevReceived;
+	int		mEventType;
 };

@@ -1,3 +1,6 @@
-﻿  cPacketController.cpp
+﻿  cEventManager.cpp
+  ServerMain.cpp
+e:\hunserver\hunserver\hunserver\servermain.cpp(31): warning C4018: '>': signed 또는 unsigned가 일치하지 않습니다.
+  코드를 생성하고 있습니다...
   HunServer.vcxproj -> E:\HunServer\HunServer\Debug\HunServer.exe
   HunServer.vcxproj -> E:\HunServer\HunServer\Debug\HunServer.pdb (Partial PDB)

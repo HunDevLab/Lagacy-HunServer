@@ -30,6 +30,8 @@
 #include "cClientManager.h"
 #include "cPacketController.h"
 #include "cNetworkSession.h"
+#include "cEvent.h"
+#include "cEventManager.h"
 
 static std::mutex gLock;
 

@@ -28,8 +28,6 @@ void cPacketController::SendPacket(int client, char* packet)
 }
 void cPacketController::ProcessPacket(int id, unsigned char* packet)
 {
-	//PacketHeader head;
-	//memcpy(&head, packet, sizeof(PacketHeader));
 	auto type = reinterpret_cast<int*>(packet);
 	std::cout << "Packet Type : " << type[1] << std::endl;
 	switch (type[1])

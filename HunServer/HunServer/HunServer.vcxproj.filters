@@ -78,6 +78,9 @@
     <ClInclude Include="cEventManager.h">
       <Filter>Event</Filter>
     </ClInclude>
+    <ClInclude Include="cEvent.h">
+      <Filter>Event</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -108,6 +111,9 @@
       <Filter>Network</Filter>
     </ClCompile>
     <ClCompile Include="cEventManager.cpp">
+      <Filter>Event</Filter>
+    </ClCompile>
+    <ClCompile Include="cEvent.cpp">
       <Filter>Event</Filter>
     </ClCompile>
   </ItemGroup>

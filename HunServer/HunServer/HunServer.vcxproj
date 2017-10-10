@@ -140,6 +140,7 @@
   <ItemGroup>
     <ClInclude Include="cClientInfo.h" />
     <ClInclude Include="cClientManager.h" />
+    <ClInclude Include="cEvent.h" />
     <ClInclude Include="cEventManager.h" />
     <ClInclude Include="cIocpManager.h" />
     <ClInclude Include="cLog.h" />
@@ -155,6 +156,7 @@
   <ItemGroup>
     <ClCompile Include="cClientInfo.cpp" />
     <ClCompile Include="cClientManager.cpp" />
+    <ClCompile Include="cEvent.cpp" />
     <ClCompile Include="cEventManager.cpp" />
     <ClCompile Include="cIocpManager.cpp" />
     <ClCompile Include="cLog.cpp" />

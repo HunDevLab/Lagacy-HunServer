@@ -17,8 +17,9 @@ public:
 
 	void End();
 	
-private:
+	HANDLE GetCompletionPort() { return mCompletionPort; };
 	HANDLE				mCompletionPort;
+private:
 	cClientManager*		mClientManager;
 	cNetworkSession*	mNetworkSession;
 	cPacketController*	mPacketController;

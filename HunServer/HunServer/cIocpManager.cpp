@@ -87,6 +87,7 @@ void cIocpManager::WorkerThread()
 
 	while (true) {
 		int ret = GetQueuedCompletionStatus(mCompletionPort, &ioSize, (PULONG)&completionKey, reinterpret_cast<LPOVERLAPPED *>(&overlapped), INFINITE);
+		std::cout << "completion Key : "<< completionKey << std::endl;
 		auto player = mClientManager->FindPlayerById(completionKey);
 		
 		
@@ -150,7 +151,8 @@ void cIocpManager::WorkerThread()
 			delete overlapped;
 		}
 		else if (overlapped->mIoType == IOType::IO_POST) {
-
+			cEventManager* manager = cEventManager::getInstance();
+			manager->ProcessEvent(completionKey, overlapped);
 		}
 		else {
 			printf("Error invalid overlapped\n");
