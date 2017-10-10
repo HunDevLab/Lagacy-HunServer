@@ -5,6 +5,7 @@
 cClientManager::cClientManager()
 {
 	mId = -1;
+	userCount = 0;
 }
 
 
@@ -14,13 +15,15 @@ cClientManager::~cClientManager()
 
 void cClientManager::AddPlayer(int playerId, SOCKET sock)
 {
+	gLock.lock();
 	auto player = mPlayers[playerId];
 	if (player != nullptr) {
 		player->SetId(playerId);
 		player->SetIsUse(true);
 		player->SetSocket(sock);
-		
 	}
+	userCount++;
+	gLock.unlock();
 }
 int cClientManager::SetConnectId()
 {

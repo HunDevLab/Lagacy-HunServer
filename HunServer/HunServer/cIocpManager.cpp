@@ -87,7 +87,7 @@ void cIocpManager::WorkerThread()
 
 	while (true) {
 		int ret = GetQueuedCompletionStatus(mCompletionPort, &ioSize, (PULONG)&completionKey, reinterpret_cast<LPOVERLAPPED *>(&overlapped), INFINITE);
-		std::cout << "completion Key : "<< completionKey << std::endl;
+		//std::cout << "completion Key : "<< completionKey << std::endl;
 		auto player = mClientManager->FindPlayerById(completionKey);
 		
 		
@@ -200,11 +200,18 @@ void cIocpManager::AcceptThread()
 				printf("Recv Error [%d]\n", err_code);
 		}
 		auto playerList = mClientManager->GetPlayerList();
-		for (auto iter = playerList.begin(); iter != playerList.end(); ++iter) {
+		/*for (auto iter = playerList.begin(); iter != playerList.end(); ++iter) {
 			if ((*iter)->GetIsUse() == true) {
 				if ((*iter)->GetId() != playerId) {
 					mPacketController->SendConnectPlayer(playerId, (*iter)->GetId());
-					mPacketController->SendConnectPlayer((*iter)->GetId(), playerId);
+				}
+			}
+		}*/
+		int userCount = mClientManager->GetUserCount();
+		for (int i = 0; i < userCount; ++i) {
+			for (int j = 0; j < userCount; ++j) {
+				if (i != j) {
+					mPacketController->SendConnectPlayer(i, j);
 				}
 			}
 		}

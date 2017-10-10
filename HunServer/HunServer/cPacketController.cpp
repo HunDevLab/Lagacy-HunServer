@@ -36,8 +36,11 @@ void cPacketController::ProcessPacket(int id, unsigned char* packet)
 	case CS_LOGIN_REQ:
 	{
 		auto reqPacket = reinterpret_cast<cs_login_req_packet*>(packet);
+		gLock.lock();
 		auto resPacket = ProcessLoginPacket(id,reqPacket);
+		gLock.unlock();
 		SendPacket(id, reinterpret_cast<char*>(&resPacket));
+		
 		break;
 	}
 	
@@ -81,7 +84,7 @@ void cPacketController::ProcessPacket(int id, unsigned char* packet)
 sc_login_res_packet cPacketController::ProcessLoginPacket(int id, cs_login_req_packet* reqPacket)
 {
 	
-
+	
 	std::cout << "CS_LOGIN_REQ Packet 처리 부분 진입" << std::endl;
 	auto player = mClientManager->FindPlayerById(id);
 	sc_login_res_packet resPacket;
@@ -92,12 +95,12 @@ sc_login_res_packet cPacketController::ProcessLoginPacket(int id, cs_login_req_p
 	resPacket.xpos = player->GetXPos();
 	resPacket.ypos = player->GetYPos();
 	resPacket.zpos = player->GetZPos();
-	
 	return resPacket;
 	/*std::cout << "SC_LOGIN_RES Packet을 " << id << "에게 보냄" << std::endl;*/
 }
 void cPacketController::SendConnectPlayer(int from, int to)
 {
+	gLock.lock();
 	auto fromPlayer = mClientManager->FindPlayerById(from);
 	sc_put_player_packet packet;
 
@@ -114,5 +117,6 @@ void cPacketController::SendConnectPlayer(int from, int to)
 	else {
 		std::cout << from << "번 유저가 " << to << "번 유저에게 접속을 알립니다." << std::endl;
 	}
+	gLock.unlock();
 	SendPacket(to, reinterpret_cast<char*>(&packet));
 }

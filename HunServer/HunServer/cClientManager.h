@@ -14,9 +14,11 @@ public:
 	cPlayer* FindPlayerById(int playerId);
 
 	std::vector<cPlayer*> GetPlayerList() { return mPlayers; }
+	int GetUserCount() { return userCount; }
 private:
 	std::vector<cPlayer*> mPlayers;
 	int mId;
+	int userCount;
 	std::mutex		mClientLock;
 };
 
