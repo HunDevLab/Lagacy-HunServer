@@ -176,9 +176,9 @@ void cIocpManager::AcceptThread()
 		}
 		mClientManager->AddPlayer(playerId, mNetworkSession->GetClientSocket());
 		auto player = mClientManager->FindPlayerById(playerId);
-		player->SetXPos(100.f);
-		player->SetYPos(30.f);
-		player->SetZPos(123.f);
+		player->SetXPos(0.0f);
+		player->SetYPos(0.0f);
+		player->SetZPos(0.0f);
 		player->SetHp(1000);
 		std::cout << "플레이어 사용가능 여부 : " << player->GetIsUse() << std::endl;
 		std::cout << "플레이어 ID" << player->GetId() << std::endl;
@@ -204,6 +204,7 @@ void cIocpManager::AcceptThread()
 			if ((*iter)->GetIsUse() == true) {
 				if ((*iter)->GetId() != playerId) {
 					mPacketController->SendConnectPlayer(playerId, (*iter)->GetId());
+					mPacketController->SendConnectPlayer((*iter)->GetId(), playerId);
 				}
 			}
 		}
