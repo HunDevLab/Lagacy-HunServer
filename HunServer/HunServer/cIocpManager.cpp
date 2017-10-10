@@ -96,6 +96,7 @@ void cIocpManager::WorkerThread()
 			// 해당하는 플레이어를 찾아서 vector에서 삭제
 			gLock.lock();
 			mClientManager->RemovePlayer(player->GetId());
+			
 			closesocket(player->GetSocket());
 			gLock.unlock();
 			continue;
@@ -199,7 +200,6 @@ void cIocpManager::AcceptThread()
 			if (err_code != ERROR_IO_PENDING)
 				printf("Recv Error [%d]\n", err_code);
 		}
-		auto playerList = mClientManager->GetPlayerList();
 		/*for (auto iter = playerList.begin(); iter != playerList.end(); ++iter) {
 			if ((*iter)->GetIsUse() == true) {
 				if ((*iter)->GetId() != playerId) {
@@ -207,14 +207,6 @@ void cIocpManager::AcceptThread()
 				}
 			}
 		}*/
-		int userCount = mClientManager->GetUserCount();
-		for (int i = 0; i < userCount; ++i) {
-			for (int j = 0; j < userCount; ++j) {
-				if (i != j) {
-					mPacketController->SendConnectPlayer(i, j);
-				}
-			}
-		}
 	}
 
 	closesocket(mNetworkSession->GetListenSocket());

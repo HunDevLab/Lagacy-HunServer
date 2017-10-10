@@ -88,6 +88,7 @@ void cClientManager::RemovePlayer(int playerId)
 			(*player)->resetClient();
 			(*player)->resetPlayer();
 			(*player)->SetId(playerId);
+			userCount--;
 			std::cout << " RemovePlayer Function .. [Success]" << std::endl;
 		}
 	}

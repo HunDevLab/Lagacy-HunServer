@@ -29,17 +29,27 @@ void cPacketController::SendPacket(int client, char* packet)
 }
 void cPacketController::ProcessPacket(int id, unsigned char* packet)
 {
+	
 	auto type = reinterpret_cast<int*>(packet);
 	std::cout << "Packet Type : " << type[1] << std::endl;
+	
 	switch (type[1])
 	{
 	case CS_LOGIN_REQ:
 	{
-		auto reqPacket = reinterpret_cast<cs_login_req_packet*>(packet);
 		gLock.lock();
+		auto reqPacket = reinterpret_cast<cs_login_req_packet*>(packet);
 		auto resPacket = ProcessLoginPacket(id,reqPacket);
 		gLock.unlock();
 		SendPacket(id, reinterpret_cast<char*>(&resPacket));
+		
+		for (int i = 0; i < mClientManager->GetUserCount(); ++i) {
+			for (int j = 0; j < mClientManager->GetUserCount(); ++j) {
+				if(i!=j) {
+					SendConnectPlayer(i, j);
+				}
+			}
+		}
 		break;
 	}
 	
