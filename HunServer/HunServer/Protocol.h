@@ -27,7 +27,7 @@ enum MonsterEvent {
 //				Client -> Server Type
 // ---------------------------------------------------
 #define CS_LOGIN_REQ	1
-
+#define CS_LOGIN_RES_FIN 2
 
 // ---------------------------------------------------
 //				Server -> Client Type

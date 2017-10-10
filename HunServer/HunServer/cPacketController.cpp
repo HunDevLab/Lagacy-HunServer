@@ -42,7 +42,10 @@ void cPacketController::ProcessPacket(int id, unsigned char* packet)
 		auto resPacket = ProcessLoginPacket(id,reqPacket);
 		gLock.unlock();
 		SendPacket(id, reinterpret_cast<char*>(&resPacket));
-		
+		break;
+	}
+	case CS_LOGIN_RES_FIN:
+	{
 		for (int i = 0; i < mClientManager->GetUserCount(); ++i) {
 			for (int j = 0; j < mClientManager->GetUserCount(); ++j) {
 				if(i!=j) {
@@ -50,9 +53,8 @@ void cPacketController::ProcessPacket(int id, unsigned char* packet)
 				}
 			}
 		}
-		break;
 	}
-	
+	break;
 	/*case CS_ATTACK:
 	{
 	std::cout << "CS_ATTACK_PACKET ÁøÀÔ" << std::endl;
