@@ -47,7 +47,10 @@ struct cs_login_req_packet {
 	char idString[10];
 	char pwString[30];
 };
-
+struct cs_login_res_fin_packet {
+	int size;
+	int type;
+};
 
 
 

@@ -1,3 +1,15 @@
-﻿  cPacketController.cpp
-  HunServer.vcxproj -> E:\HunServer\HunServer\Debug\HunServer.exe
-  HunServer.vcxproj -> E:\HunServer\HunServer\Debug\HunServer.pdb (Partial PDB)
+﻿  stdafx.cpp
+  cPlayer.cpp
+  cPacketController.cpp
+  cPacket.cpp
+  cNetworkSession.cpp
+  cLog.cpp
+  cIocpManager.cpp
+  cEventManager.cpp
+  cEvent.cpp
+  cClientManager.cpp
+  cClientInfo.cpp
+  ServerMain.cpp
+e:\hunserver\hunserver\hunserver\servermain.cpp(23): warning C4018: '>': signed 또는 unsigned가 일치하지 않습니다.
+  코드를 생성하고 있습니다...
+LINK : fatal error LNK1168: E:\HunServer\HunServer\Debug\HunServer.exe을(를) 쓰기용으로 열 수 없습니다.
