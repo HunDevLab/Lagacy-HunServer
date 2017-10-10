@@ -81,6 +81,9 @@
     <ClInclude Include="cEvent.h">
       <Filter>Event</Filter>
     </ClInclude>
+    <ClInclude Include="cPacket.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -115,6 +118,9 @@
     </ClCompile>
     <ClCompile Include="cEvent.cpp">
       <Filter>Event</Filter>
+    </ClCompile>
+    <ClCompile Include="cPacket.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

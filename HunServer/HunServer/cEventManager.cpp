@@ -26,6 +26,7 @@ void cEventManager::ProcessEvent(int id, OverlappedEx* packet) {
 		case MonsterEvent::MOVE:
 		{
 			std::cout <<id <<  "번 몬스터 Event MOVE Switch문 안으로 들어옴" << std::endl;
+			ResistEvent(id, MonsterEvent::MOVE, 1000 + GetTickCount());
 		}
 		break;
 		case MonsterEvent::SPAWN:
@@ -50,5 +51,5 @@ void cEventManager::PostEventToQueue(cEvent evt) {
 	postEx->mEventType = evt.getType();
 	ZeroMemory(&postEx->mOverlapped, sizeof(WSAOVERLAPPED));
 	PostQueuedCompletionStatus(pIocpManager->GetCompletionPort(), 1, evt.getId(), reinterpret_cast<LPOVERLAPPED>(postEx));
-	ResistEvent(evt.getId(), MonsterEvent::MOVE, 1000 + GetTickCount());
+	
 }

@@ -176,9 +176,13 @@ void cIocpManager::AcceptThread()
 		}
 		mClientManager->AddPlayer(playerId, mNetworkSession->GetClientSocket());
 		auto player = mClientManager->FindPlayerById(playerId);
-
+		player->SetXPos(100.f);
+		player->SetYPos(30.f);
+		player->SetZPos(123.f);
+		player->SetHp(1000);
 		std::cout << "플레이어 사용가능 여부 : " << player->GetIsUse() << std::endl;
 		std::cout << "플레이어 ID" << player->GetId() << std::endl;
+		
 		// IOCP 연결
 	
 		CreateIoCompletionPort(reinterpret_cast<HANDLE>(mNetworkSession->GetClientSocket()),
@@ -195,6 +199,16 @@ void cIocpManager::AcceptThread()
 			if (err_code != ERROR_IO_PENDING)
 				printf("Recv Error [%d]\n", err_code);
 		}
+		mPacketController->SendConnectPlayer(playerId, playerId);
+		auto playerList = mClientManager->GetPlayerList();
+		for (auto iter = playerList.begin(); iter != playerList.end(); ++iter) {
+			if ((*iter)->GetIsUse() == true) {
+				if ((*iter)->GetId() != playerId) {
+					mPacketController->SendConnectPlayer(playerId, (*iter)->GetId());
+				}
+			}
+		}
 	}
+
 	closesocket(mNetworkSession->GetListenSocket());
 }

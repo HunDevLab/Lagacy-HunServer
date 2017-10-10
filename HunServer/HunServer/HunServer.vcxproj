@@ -146,6 +146,7 @@
     <ClInclude Include="cLog.h" />
     <ClInclude Include="cNetworkSession.h" />
     <ClInclude Include="CommonDef.h" />
+    <ClInclude Include="cPacket.h" />
     <ClInclude Include="cPacketController.h" />
     <ClInclude Include="cPlayer.h" />
     <ClInclude Include="cSingleton.h" />
@@ -161,6 +162,7 @@
     <ClCompile Include="cIocpManager.cpp" />
     <ClCompile Include="cLog.cpp" />
     <ClCompile Include="cNetworkSession.cpp" />
+    <ClCompile Include="cPacket.cpp" />
     <ClCompile Include="cPacketController.cpp" />
     <ClCompile Include="cPlayer.cpp" />
     <ClCompile Include="ServerMain.cpp" />

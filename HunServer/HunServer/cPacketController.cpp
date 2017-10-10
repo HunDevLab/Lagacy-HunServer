@@ -4,6 +4,7 @@
 
 cPacketController::cPacketController()
 {
+	mClientManager = cClientManager::getInstance();
 }
 
 
@@ -35,46 +36,11 @@ void cPacketController::ProcessPacket(int id, unsigned char* packet)
 	case CS_LOGIN_REQ:
 	{
 		auto reqPacket = reinterpret_cast<cs_login_req_packet*>(packet);
-
-		std::cout << "CS_LOGIN_REQ Packet 처리 부분 진입" << std::endl;
-		std::cout << "ID : " << id << std::endl;
-
-		char tmpId[10] = "akkmh";
-		char tmpPw[30] = "audgns01001";
-
-		auto reqId = reqPacket->idString;
-		auto reqPw = reqPacket->pwString;
-
-		// 문자열이 일치하면 0을 반환함
-		int idCheck = strcmp(tmpId, reqId);
-		int pwCheck = strcmp(tmpPw, reqPw);
-
-		sc_login_res_packet resPacket;
-		resPacket.type = SC_LOGIN_RES;
-		resPacket.size = sizeof(sc_login_res_packet);
-
-		if (idCheck == 0 && pwCheck == 0) {
-			// 아이디랑 비밀번호가 일치하는 경우	
-			std::cout << "LOGIN 매칭 성공" << std::endl;
-			resPacket.isSuccess = true;
-		}
-		else if (idCheck != 0 || pwCheck != 0) {
-			std::cout << "무엇인가 잘못 입력해서 틀림.." << std::endl;
-			resPacket.isSuccess = false;
-			if (idCheck != 0) {
-				std::cout << "ID 잘못 입력해서 틀림.." << std::endl;
-				resPacket.failReason = FAIL_REASON::ID;
-			}
-			else {
-				std::cout << "PW 잘못 입력해서 틀림.." << std::endl;
-				resPacket.failReason = FAIL_REASON::PW;
-			}
-		}
-
-		std::cout << "SC_LOGIN_RES Packet을 " << id << "에게 보냄" << std::endl;
+		auto resPacket = ProcessLoginPacket(reqPacket);
 		SendPacket(id, reinterpret_cast<char*>(&resPacket));
 		break;
 	}
+	
 	/*case CS_ATTACK:
 	{
 	std::cout << "CS_ATTACK_PACKET 진입" << std::endl;
@@ -110,4 +76,65 @@ void cPacketController::ProcessPacket(int id, unsigned char* packet)
 		std::cout << "패킷타입이 잘 못 들어왔습니다. " << std::endl;
 		break;
 	}
+}
+// 패킷 처리 관련 함수
+sc_login_res_packet cPacketController::ProcessLoginPacket(cs_login_req_packet* reqPacket)
+{
+	
+
+	std::cout << "CS_LOGIN_REQ Packet 처리 부분 진입" << std::endl;
+
+	char tmpId[10] = "akkmh";
+	char tmpPw[30] = "audgns01001";
+
+	auto reqId = reqPacket->idString;
+	auto reqPw = reqPacket->pwString;
+
+	// 문자열이 일치하면 0을 반환함
+	int idCheck = strcmp(tmpId, reqId);
+	int pwCheck = strcmp(tmpPw, reqPw);
+
+	sc_login_res_packet resPacket;
+	resPacket.type = SC_LOGIN_RES;
+	resPacket.size = sizeof(sc_login_res_packet);
+
+	if (idCheck == 0 && pwCheck == 0) {
+		// 아이디랑 비밀번호가 일치하는 경우	
+		std::cout << "LOGIN 매칭 성공" << std::endl;
+		resPacket.isSuccess = true;
+	}
+	else if (idCheck != 0 || pwCheck != 0) {
+		std::cout << "무엇인가 잘못 입력해서 틀림.." << std::endl;
+		resPacket.isSuccess = false;
+		if (idCheck != 0) {
+			std::cout << "ID 잘못 입력해서 틀림.." << std::endl;
+			resPacket.failReason = FAIL_REASON::ID;
+		}
+		else {
+			std::cout << "PW 잘못 입력해서 틀림.." << std::endl;
+			resPacket.failReason = FAIL_REASON::PW;
+		}
+	}
+	return resPacket;
+	/*std::cout << "SC_LOGIN_RES Packet을 " << id << "에게 보냄" << std::endl;*/
+}
+void cPacketController::SendConnectPlayer(int from, int to)
+{
+	auto fromPlayer = mClientManager->FindPlayerById(from);
+	sc_put_player_packet packet;
+
+	packet.id = fromPlayer->GetId();
+	packet.xpos = fromPlayer->GetXPos();
+	packet.ypos = fromPlayer->GetYPos();
+	packet.zpos = fromPlayer->GetZPos();
+	packet.hp = fromPlayer->GetHp();
+	packet.size = sizeof(sc_put_player_packet);
+	packet.type = SC_PUT_PLAYER;
+	if(from == to) {
+		std::cout << from << "번 유저가 자기 자신의 접속을 알립니다." << std::endl;
+	}
+	else {
+		std::cout << from << "번 유저가 " << to << "번 유저에게 접속을 알립니다." << std::endl;
+	}
+	SendPacket(to, reinterpret_cast<char*>(&packet));
 }
