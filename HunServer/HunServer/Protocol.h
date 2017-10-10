@@ -61,6 +61,14 @@ enum FAIL_REASON {
 struct sc_login_res_packet {
 	int size;
 	int type;
+	int id;
+	int hp;
+	int mp;
+	int atk;
+	int level;
+	float xpos;
+	float ypos;
+	float zpos;
 	bool isSuccess;
 	bool failReason;
 };

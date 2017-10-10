@@ -9,7 +9,7 @@ public:
 	void SendPacket(int client, char* packet);
 	void ProcessPacket(int id, unsigned char* packet);
 
-	sc_login_res_packet ProcessLoginPacket(cs_login_req_packet* reqPacket);
+	sc_login_res_packet ProcessLoginPacket(int id, cs_login_req_packet* reqPacket);
 
 
 	// 보내는 패킷 처리 함수

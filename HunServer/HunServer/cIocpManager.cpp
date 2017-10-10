@@ -199,7 +199,6 @@ void cIocpManager::AcceptThread()
 			if (err_code != ERROR_IO_PENDING)
 				printf("Recv Error [%d]\n", err_code);
 		}
-		mPacketController->SendConnectPlayer(playerId, playerId);
 		auto playerList = mClientManager->GetPlayerList();
 		for (auto iter = playerList.begin(); iter != playerList.end(); ++iter) {
 			if ((*iter)->GetIsUse() == true) {
