@@ -40,7 +40,6 @@ void cPacketController::ProcessPacket(int id, unsigned char* packet)
 		auto resPacket = ProcessLoginPacket(id,reqPacket);
 		gLock.unlock();
 		SendPacket(id, reinterpret_cast<char*>(&resPacket));
-		
 		break;
 	}
 	
